@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="hello" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project default="usage" xmlns:ivy="antlib:org.apache.ivy.ant">
 
     <target name="properties">
 
@@ -49,8 +49,7 @@
     </target>
 
     <target name="hello" depends="compile">
-        <java
-            classname="Test">
+        <java classname="HelloWorld">
             <classpath>
                 <pathelement location="${target.dir}/classes"/>
                 <pathelement location="lib/groovy-${groovy.version}.jar" />
@@ -62,6 +61,41 @@
         <groovy>
             println( "Hello World. (Sent from groovy interpreter)" )
         </groovy>
+    </target>
+
+    <target name="dsl" depends="compile">
+
+        <echo>Run using compiled groovy code</echo>
+        <java classname="UseDsl">
+            <classpath>
+                <pathelement location="${target.dir}/classes"/>
+                <pathelement location="lib/groovy-${groovy.version}.jar" />
+            </classpath>
+        </java>
+
+        <echo>Run using interpreted groovy code</echo>
+        <groovy
+            classpath="${target.dir}/classes">
+
+            import static com.infodesire.dsl.Dsl.query
+            query {
+            }
+            
+        </groovy>
+
+    </target>
+
+    <target name="usage">
+        <echo>
+Proof of concept for a groovy based DSL
+
+ant hello ............. Compile and run groovy class HelloWorld
+ant hello2 ............ Run a script in groovy interpreter
+ant dsl ............... Run a groovy code using the dsl
+
+Before first compile, install ivy:
+cd ivy; ./install-ivy.sh
+        </echo>
     </target>
 
 </project>
