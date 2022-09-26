@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="hello" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <target name="properties">
+
+        <property name="groovy.version" value="4.0.5" />
+        <property name="target.dir" value="target" />
+
+    </target>
+
+    <target name="setup" depends="properties" >
+
+        <!-- ivy (dependency manager) -->
+        <!-- to (re)install ivy: cd ivy; ./install-ivy.sh -->
+        <path id="ivy.lib.path">
+            <fileset dir="ivy/ivy" includes="*.jar"/>
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+
+        <!-- groovy -->
+        <property name="groovy.home" value="groovy-${groovy.version}" />
+        <taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy"
+                 classpath="${groovy.home}/lib/groovy-all-${groovy.version}.jar" />
+
+        <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc"
+                 classpath="${groovy.home}/lib/groovy-all-${groovy.version}.jar" />
+
+        <!-- build stuff -->
+        <mkdir dir="${target.dir}" />
+
+    </target>
+
+    <target name="clean" depends="setup">
+        <delete dir="${target.dir}" />
+    </target>
+
+    <target name="fetchlibs" depends="setup">
+        <ivy:retrieve />
+    </target>
+
+    <target name="compile" depends="fetchlibs">
+        <mkdir dir="${target.dir}/classes" />
+        <groovyc
+                srcdir="src/main/groovy"
+                destdir="${target.dir}/classes"
+        >
+        </groovyc>
+    </target>
+
+    <target name="hello" depends="compile">
+        <java
+            classname="Test">
+            <classpath>
+                <pathelement location="${target.dir}/classes"/>
+                <pathelement location="lib/groovy-${groovy.version}.jar" />
+            </classpath>
+        </java>
+    </target>
+
+    <target name="hello2" depends="setup">
+        <groovy>
+            println( "Hello World. (Sent from groovy interpreter)" )
+        </groovy>
+    </target>
+
+</project>
