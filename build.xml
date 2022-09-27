@@ -80,7 +80,7 @@
             import static com.infodesire.dsl.Dsl.query
             query {
             }
-            
+
         </groovy>
 
     </target>
